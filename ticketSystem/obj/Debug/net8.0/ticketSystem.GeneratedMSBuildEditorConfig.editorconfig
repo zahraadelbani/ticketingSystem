@@ -1,11 +1,19 @@
 is_global = true
 build_property.TargetFramework = net8.0
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
 build_property.TargetPlatformMinVersion = 
 build_property.UsingMicrosoftNETSdkWeb = true
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
 build_property.ProjectTypeGuids = 
 build_property.InvariantGlobalization = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
 build_property.PlatformNeutralAssembly = 
 build_property.EnforceExtendedAnalyzerRules = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = ticketSystem
 build_property.RootNamespace = ticketSystem
@@ -55,3 +63,27 @@ build_metadata.AdditionalFiles.CssScope = b-9zldgyyhav
 [C:/Users/ZAHRAA/source/repos/ticketSystem/ticketSystem/Components/Layout/NavMenu.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcTmF2TWVudS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-hy3p2sm40t
+
+[C:/Users/ZAHRAA/source/repos/ticketSystem/ticketSystem/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ZAHRAA/source/repos/ticketSystem/ticketSystem/Views/Tickets/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlja2V0c1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ZAHRAA/source/repos/ticketSystem/ticketSystem/Views/Tickets/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlja2V0c1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ZAHRAA/source/repos/ticketSystem/ticketSystem/Views/Tickets/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlja2V0c1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ZAHRAA/source/repos/ticketSystem/ticketSystem/Views/Tickets/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlja2V0c1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ZAHRAA/source/repos/ticketSystem/ticketSystem/Views/Tickets/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGlja2V0c1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
