@@ -1,0 +1,57 @@
+﻿# Build output directories and files
+[Dd]ebug/
+[Rr]elease/
+bin/
+obj/
+artifacts/
+
+# Visual Studio specific files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Dependency folders and packages 
+**/[Pp]ackages/*
+*.nupkg
+*.snupkg
+
+# Files from Visual Studio extensions
+_ReSharper*/
+*.DotSettings.user
+_NCrunch_*
+nCrunchTemp_*
+StyleCopReport.xml
+
+# Logs and temporary files 
+*.log
+[Ll]ogs/
+*.tmp
+*.temp
+*.bak
+*~
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test result files 
+TestResults/
+*.trx
+*.Coverage
+
+# Sensitive config
+secrets.json
+appsettings.Development.json
+appsettings.Local.json
+.env
+*.publishsettings
+*.pubxml
+*.azurePubxml
+
+# OS-generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.BIN/
+.DS_Store
