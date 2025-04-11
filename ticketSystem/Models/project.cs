@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ticketSystem.Models
 {
@@ -7,13 +8,14 @@ namespace ticketSystem.Models
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        [Required(ErrorMessage = "Project name is required")]
+        public string Name { get; set; } = string.Empty;
 
-        public string Description { get; set; }
+        [Required(ErrorMessage = "Description is required")]
+        public string Description { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        // Link to Tickets (one-to-many)
-        public virtual ICollection<Ticket> Tickets { get; set; }
+        public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
     }
 }

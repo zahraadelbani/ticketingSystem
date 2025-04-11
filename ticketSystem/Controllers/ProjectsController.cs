@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ticketSystem.Data;
 using ticketSystem.Models;
@@ -50,18 +49,22 @@ namespace ticketSystem.Controllers
         }
 
         // POST: Projects/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,CreatedAt")] Project project)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description")] Project project)
         {
+            // Automatically set the creation date
+            project.CreatedAt = DateTime.Now;
+
             if (ModelState.IsValid)
             {
                 _context.Add(project);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = "Project created successfully!";
                 return RedirectToAction(nameof(Index));
             }
+
+            // If ModelState is invalid, the view is re-rendered with validation errors
             return View(project);
         }
 
@@ -82,8 +85,6 @@ namespace ticketSystem.Controllers
         }
 
         // POST: Projects/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,CreatedAt")] Project project)
