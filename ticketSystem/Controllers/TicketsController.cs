@@ -22,23 +22,23 @@ namespace ticketSystem.Controllers
         // GET: Tickets
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Tickets.ToListAsync());
+            var ticketsWithProjects = _context.Tickets.Include(t => t.Project);
+            return View(await ticketsWithProjects.ToListAsync());
         }
+
 
         // GET: Tickets/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var ticket = await _context.Tickets
+                .Include(t => t.Project)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (ticket == null)
-            {
                 return NotFound();
-            }
 
             return View(ticket);
         }
@@ -46,52 +46,49 @@ namespace ticketSystem.Controllers
         // GET: Tickets/Create
         public IActionResult Create()
         {
+            ViewBag.ProjectId = new SelectList(_context.Projects, "Id", "Name");
             return View();
         }
 
         // POST: Tickets/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,Status,CreatedAt,CreatedBy")] Ticket ticket)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,Status,CreatedAt,CreatedBy,ProjectId")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(ticket);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index)); // ✅ Redirect on success
             }
-            return View(ticket);
+
+            // ❗ Important: re-populate dropdown if validation fails
+            ViewBag.ProjectId = new SelectList(_context.Projects, "Id", "Name", ticket.ProjectId);
+            return View(ticket); // re-render form if invalid
         }
+
 
         // GET: Tickets/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var ticket = await _context.Tickets.FindAsync(id);
             if (ticket == null)
-            {
                 return NotFound();
-            }
+
+            ViewBag.ProjectId = new SelectList(_context.Projects, "Id", "Name", ticket.ProjectId);
             return View(ticket);
         }
 
         // POST: Tickets/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Status,CreatedAt,CreatedBy")] Ticket ticket)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Status,CreatedAt,CreatedBy,ProjectId")] Ticket ticket)
         {
             if (id != ticket.Id)
-            {
                 return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
@@ -103,16 +100,14 @@ namespace ticketSystem.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!TicketExists(ticket.Id))
-                    {
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.ProjectId = new SelectList(_context.Projects, "Id", "Name", ticket.ProjectId);
             return View(ticket);
         }
 
@@ -120,16 +115,14 @@ namespace ticketSystem.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var ticket = await _context.Tickets
+                .Include(t => t.Project)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (ticket == null)
-            {
                 return NotFound();
-            }
 
             return View(ticket);
         }
