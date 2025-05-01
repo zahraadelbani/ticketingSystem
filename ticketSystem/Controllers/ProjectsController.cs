@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ticketSystem.Data;
 using ticketSystem.Models;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ticketSystem.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")]
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -18,44 +18,25 @@ namespace ticketSystem.Controllers
             _context = context;
         }
 
-        // GET: Projects
         public async Task<IActionResult> Index()
         {
             return View(await _context.Projects.ToListAsync());
         }
 
-        // GET: Projects/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var project = await _context.Projects
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (project == null)
-            {
-                return NotFound();
-            }
-
-            return View(project);
+            if (id == null) return NotFound();
+            var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == id);
+            return project == null ? NotFound() : View(project);
         }
 
-        // GET: Projects/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+        public IActionResult Create() => View();
 
-        // POST: Projects/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description")] Project project)
         {
-            // Automatically set the creation date
-            project.CreatedAt = DateTime.Now;
-
+            project.CreatedAt = System.DateTime.Now;
             if (ModelState.IsValid)
             {
                 _context.Add(project);
@@ -63,37 +44,21 @@ namespace ticketSystem.Controllers
                 TempData["Success"] = "Project created successfully!";
                 return RedirectToAction(nameof(Index));
             }
-
-            // If ModelState is invalid, the view is re-rendered with validation errors
             return View(project);
         }
 
-        // GET: Projects/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null) return NotFound();
             var project = await _context.Projects.FindAsync(id);
-            if (project == null)
-            {
-                return NotFound();
-            }
-            return View(project);
+            return project == null ? NotFound() : View(project);
         }
 
-        // POST: Projects/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,CreatedAt")] Project project)
         {
-            if (id != project.Id)
-            {
-                return NotFound();
-            }
-
+            if (id != project.Id) return NotFound();
             if (ModelState.IsValid)
             {
                 try
@@ -103,56 +68,29 @@ namespace ticketSystem.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProjectExists(project.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!_context.Projects.Any(p => p.Id == id)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
             return View(project);
         }
 
-        // GET: Projects/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var project = await _context.Projects
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (project == null)
-            {
-                return NotFound();
-            }
-
-            return View(project);
+            if (id == null) return NotFound();
+            var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == id);
+            return project == null ? NotFound() : View(project);
         }
 
-        // POST: Projects/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var project = await _context.Projects.FindAsync(id);
-            if (project != null)
-            {
-                _context.Projects.Remove(project);
-            }
-
+            if (project != null) _context.Projects.Remove(project);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ProjectExists(int id)
-        {
-            return _context.Projects.Any(e => e.Id == id);
         }
     }
 }

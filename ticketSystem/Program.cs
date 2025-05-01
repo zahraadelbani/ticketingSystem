@@ -1,33 +1,34 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using ticketSystem.Components;
 using ticketSystem.Data;
+using ticketSystem.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ✅ Database connection
+// ✅ DB setup
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-// ✅ Add Identity with Role support
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+// ✅ Identity setup with ApplicationUser
+builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = false;
+})
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<ApplicationDbContext>();
 
-// ✅ Razor Components + Interactive Blazor Server
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+// ✅ MVC + Razor
+builder.Services.AddRazorPages();
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// ✅ Ensure roles are seeded
+// ✅ Role seeding
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
-    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-
-    string[] roles = { "Admin", "User" };
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    string[] roles = { "Admin", "User", "Manager" };
 
     foreach (var role in roles)
     {
@@ -38,28 +39,27 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// ✅ Middleware setup
+// ✅ Middleware
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseAntiforgery();
 
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseAntiforgery(); // Required for Identity
 
-// ✅ Razor Component Mapping (Blazor App root)
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
-
-// ✅ Optional: traditional MVC routing (if needed later)
+// ✅ Default route points to login
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapRazorPages();
+
+app.MapRazorPages(); // Enables /Identity/Account/*
+
 app.Run();

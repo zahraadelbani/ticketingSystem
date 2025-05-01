@@ -1,20 +1,20 @@
-﻿
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ticketSystem.Models;
-using System.Threading.Tasks;
-using System.Linq;
 using Microsoft.AspNetCore.Authorization;
-
+using ticketSystem.Models;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ticketSystem.Controllers
 {
+    //[Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UsersController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public UsersController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -36,18 +36,27 @@ namespace ticketSystem.Controllers
             return View(users);
         }
 
-
         // GET: Users/Create
         public IActionResult Create()
         {
+            ViewBag.Roles = _roleManager.Roles.Select(r => r.Name).ToList();
             return View();
         }
 
         // POST: Users/Create
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(string email, string password, string role)
         {
-            var user = new IdentityUser { UserName = email, Email = email };
+            ViewBag.Roles = _roleManager.Roles.Select(r => r.Name).ToList();
+
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            {
+                ModelState.AddModelError(string.Empty, "Email and password are required.");
+                return View();
+            }
+
+            var user = new ApplicationUser { UserName = email, Email = email };
             var result = await _userManager.CreateAsync(user, password);
             if (result.Succeeded)
             {
@@ -55,6 +64,7 @@ namespace ticketSystem.Controllers
                 {
                     await _userManager.AddToRoleAsync(user, role);
                 }
+                TempData["Success"] = "User created successfully.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -69,15 +79,25 @@ namespace ticketSystem.Controllers
         // GET: Users/Edit/id
         public async Task<IActionResult> Edit(string id)
         {
+            if (string.IsNullOrEmpty(id)) return NotFound();
+
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
+
+            ViewBag.Roles = _roleManager.Roles.Select(r => r.Name).ToList();
+            var currentRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+            ViewBag.CurrentRole = currentRole;
+
             return View(user);
         }
 
         // POST: Users/Edit
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, string email, string role)
         {
+            if (string.IsNullOrEmpty(id)) return NotFound();
+
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
 
@@ -87,29 +107,35 @@ namespace ticketSystem.Controllers
 
             var currentRoles = await _userManager.GetRolesAsync(user);
             await _userManager.RemoveFromRolesAsync(user, currentRoles);
+
             if (!string.IsNullOrEmpty(role) && await _roleManager.RoleExistsAsync(role))
             {
                 await _userManager.AddToRoleAsync(user, role);
             }
 
+            TempData["Success"] = "User updated successfully.";
             return RedirectToAction(nameof(Index));
         }
 
         // GET: Users/Delete/id
         public async Task<IActionResult> Delete(string id)
         {
+            if (string.IsNullOrEmpty(id)) return NotFound();
+
             var user = await _userManager.FindByIdAsync(id);
-            return View(user);
+            return user == null ? NotFound() : View(user);
         }
 
         // POST: Users/Delete
         [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user != null)
             {
                 await _userManager.DeleteAsync(user);
+                TempData["Success"] = "User deleted successfully.";
             }
             return RedirectToAction(nameof(Index));
         }
