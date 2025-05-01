@@ -10,14 +10,23 @@
         <header>
             <h1>User Management</h1>
             <nav>
-                <a href="/Users">Users</a> |
-                <a href="/">Home</a>
+                <ul class="nav">
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "Home")">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "Projects")">Projects</a></li>
+                </ul>
             </nav>
+
             <hr />
         </header>
         <main>
             @RenderBody()
         </main>
     </div>
+
+    <footer>
+        <p>&copy; @DateTime.Now.Year - My Application</p>
+    </footer>
+    @RenderSection("Scripts", required: false)
+
 </body>
 </html>

@@ -14,5 +14,7 @@ namespace ticketSystem.Data
 
         // 👇 Register the Tickets table
         public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<Project> Projects { get; set; }
+
     }
 }
