@@ -11,6 +11,8 @@ namespace ticketSystem.Data
             : base(options)
         {
         }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<ActivityLog> ActivityLogs { get; set; }
 
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Project> Projects { get; set; }

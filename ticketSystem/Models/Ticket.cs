@@ -6,6 +6,7 @@ namespace ticketSystem.Models
     public class Ticket
     {
         public int Id { get; set; }
+        public string? AssignedTo { get; set; }  // This will store the username or UserId
 
         [Required(ErrorMessage = "Title is required")]
         public string Title { get; set; } = string.Empty;

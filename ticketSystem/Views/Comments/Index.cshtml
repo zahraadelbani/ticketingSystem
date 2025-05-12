@@ -1,0 +1,29 @@
+﻿@model List<ticketSystem.Models.Comment>
+@{
+    ViewBag.Title = "Comments";
+    var ticketId = ViewBag.TicketId;
+}
+
+<h2>Comments for Ticket @ticketId</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Comment</th>
+            <th>Posted At</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var comment in Model)
+        {
+            <tr>
+                <td>@comment.UserId</td>
+                <td>@comment.Text</td>
+                <td>@comment.CreatedAt.ToString("g")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" asp-route-ticketId="@ticketId" class="btn btn-primary">Add Comment</a>
