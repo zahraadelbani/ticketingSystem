@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ticketSystem.Models
 {
@@ -19,10 +20,10 @@ namespace ticketSystem.Models
 
         public string? CreatedBy { get; set; }
 
-        // 🔗 Foreign Key to Project
         [Required(ErrorMessage = "Please select a project")]
         public int ProjectId { get; set; }
 
-        public virtual Project Project { get; set; } = null!;
+        [ForeignKey("ProjectId")]
+        public virtual Project? Project { get; set; }
     }
 }

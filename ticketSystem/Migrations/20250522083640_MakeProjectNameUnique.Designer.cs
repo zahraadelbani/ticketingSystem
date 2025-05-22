@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ticketSystem.Data;
 
@@ -11,9 +12,11 @@ using ticketSystem.Data;
 namespace ticketSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250522083640_MakeProjectNameUnique")]
+    partial class MakeProjectNameUnique
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -331,8 +334,12 @@ namespace ticketSystem.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProjectId")
+                    b.Property<int?>("ProjectId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ProjectName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
@@ -431,13 +438,9 @@ namespace ticketSystem.Migrations
 
             modelBuilder.Entity("ticketSystem.Models.Ticket", b =>
                 {
-                    b.HasOne("ticketSystem.Models.Project", "Project")
+                    b.HasOne("ticketSystem.Models.Project", null)
                         .WithMany("Tickets")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Project");
+                        .HasForeignKey("ProjectId");
                 });
 
             modelBuilder.Entity("ticketSystem.Models.Project", b =>

@@ -6,6 +6,7 @@ using ticketSystem.Data;
 using ticketSystem.Models;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace ticketSystem.Controllers
 {
@@ -13,16 +14,18 @@ namespace ticketSystem.Controllers
     public class TicketsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public TicketsController(ApplicationDbContext context)
+        public TicketsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
         {
-            var ticketsWithProjects = _context.Tickets.Include(t => t.Project);
-            return View(await ticketsWithProjects.ToListAsync());
+            var tickets = _context.Tickets.Include(t => t.Project);
+            return View(await tickets.ToListAsync());
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -51,6 +54,10 @@ namespace ticketSystem.Controllers
         public IActionResult Create()
         {
             ViewBag.ProjectId = new SelectList(_context.Projects, "Id", "Name");
+            ViewBag.StatusList = new SelectList(new[]
+            {
+                "Open", "In Progress", "Resolved", "Closed"
+            });
             return View();
         }
 
@@ -60,23 +67,26 @@ namespace ticketSystem.Controllers
         public async Task<IActionResult> Create([Bind("Id,Title,Description,Status,ProjectId")] Ticket ticket)
         {
             ticket.CreatedAt = System.DateTime.Now;
-            ticket.CreatedBy = User.Identity.Name;
+            var user = await _userManager.GetUserAsync(User);
+            ticket.CreatedBy = user?.UserName ?? "System";
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(ticket);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ViewBag.DebugErrors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                ViewBag.ProjectId = new SelectList(_context.Projects, "Id", "Name", ticket.ProjectId);
+                ViewBag.StatusList = new SelectList(new[] { "Open", "In Progress", "Resolved", "Closed" });
+                return View(ticket);
             }
-            ViewBag.ProjectId = new SelectList(_context.Projects, "Id", "Name", ticket.ProjectId);
-            ViewBag.StatusList = new SelectList(new[] { "Open", "In Progress", "Resolved", "Closed" });
-            return View(ticket);
+
+            _context.Add(ticket);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
-            var ticket = await _context.Tickets.FindAsync(id);
+            var ticket = await _context.Tickets.Include(t => t.Project).FirstOrDefaultAsync(t => t.Id == id);
             if (ticket == null) return NotFound();
             ViewBag.ProjectId = new SelectList(_context.Projects, "Id", "Name", ticket.ProjectId);
             ViewBag.StatusList = new SelectList(new[] { "Open", "In Progress", "Resolved", "Closed" });
@@ -149,13 +159,10 @@ namespace ticketSystem.Controllers
 
                     if (ticket.ProjectId != originalTicket.ProjectId)
                     {
-                        var oldProject = await _context.Projects.FindAsync(originalTicket.ProjectId);
-                        var newProject = await _context.Projects.FindAsync(ticket.ProjectId);
-
                         logs.Add(new ActivityLog
                         {
                             TicketId = ticket.Id,
-                            Action = $"Project changed from \"{oldProject?.Name}\" to \"{newProject?.Name}\"",
+                            Action = $"Project changed from \"{originalTicket.ProjectId}\" to \"{ticket.ProjectId}\"",
                             PerformedBy = username,
                             PerformedAt = now
                         });
