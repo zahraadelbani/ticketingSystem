@@ -1,0 +1,37 @@
+﻿@model IEnumerable<ticketSystem.Models.Priority>
+
+@{
+    ViewData["Title"] = "Priorities";
+}
+
+<h1>Priorities</h1>
+<hr />
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Priority</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Level</th>
+            <th>Created At</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var pr in Model)
+        {
+            <tr>
+                <td>@pr.Name</td>
+                <td>@pr.Level</td>
+                <td>@pr.CreatedAt</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@pr.Id" class="btn btn-sm btn-secondary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@pr.Id" class="btn btn-sm btn-danger ms-2">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
