@@ -1,18 +1,14 @@
 ﻿@model ticketSystem.Models.Comment
-@{
-    ViewBag.Title = "Add Comment";
-}
 
-<h2>Add Comment</h2>
-
-<form asp-action="Create">
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
     <input type="hidden" asp-for="TicketId" />
 
     <div class="form-group">
-        <label asp-for="Text" class="control-label"></label>
+        <label asp-for="Text"></label>
         <textarea asp-for="Text" class="form-control"></textarea>
         <span asp-validation-for="Text" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-success">Submit</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>

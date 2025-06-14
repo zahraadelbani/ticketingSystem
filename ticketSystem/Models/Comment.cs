@@ -7,16 +7,15 @@ namespace ticketSystem.Models
     {
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Comment text is required")]
         public string Text { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        // Optional: reference the Ticket and User
         public int TicketId { get; set; }
-        public Ticket Ticket { get; set; }
+        public Ticket? Ticket { get; set; }
 
-        public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
+        public string? UserId { get; set; }
+        public ApplicationUser? User { get; set; }
     }
 }
