@@ -1,0 +1,40 @@
+﻿@model List<ticketSystem.Models.Comment>
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewBag.Title = "Comments";
+    var ticketId = ViewBag.TicketId;
+    var currentUserId = UserManager.GetUserId(User);
+}
+
+<h2>Comments for Ticket @ticketId</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Comment</th>
+            <th>Posted At</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var comment in Model)
+        {
+            <tr>
+                <td>@comment.User?.UserName</td>
+                <td>@comment.Text</td>
+                <td>@comment.CreatedAt.ToString("g")</td>
+                <td>
+                    @if (comment.UserId == currentUserId)
+                    {
+                        <a asp-action="Delete" asp-route-id="@comment.Id" class="btn btn-sm btn-danger">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" asp-route-ticketId="@ticketId" class="btn btn-primary">Add Comment</a>

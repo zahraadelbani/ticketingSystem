@@ -58,3 +58,44 @@
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+<h3>Comments</h3>
+<a asp-controller="Comments" asp-action="Index" asp-route-ticketId="@Model.Id" class="btn btn-primary">
+    View/Add Comments
+</a>
+<a asp-controller="ActivityLogs" asp-action="Index" asp-route-ticketId="@Model.Id" class="btn btn-secondary">
+    View Activity Log
+</a>
+<hr />
+<h3>Activity Log</h3>
+
+@if (Model.Id != 0)
+{
+    var activityLogs = (List<ticketSystem.Models.ActivityLog>)ViewBag.ActivityLogs;
+
+    if (activityLogs != null && activityLogs.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>By</th>
+                    <th>When</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var log in activityLogs)
+                {
+                    <tr>
+                        <td>@log.Action</td>
+                        <td>@log.PerformedBy</td>
+                        <td>@log.PerformedAt.ToString("g")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No activity yet for this ticket.</p>
+    }
+}

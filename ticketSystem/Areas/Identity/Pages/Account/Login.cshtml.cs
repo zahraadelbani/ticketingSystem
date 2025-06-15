@@ -36,8 +36,8 @@ namespace ticketSystem.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [EmailAddress]
-            public string? Email { get; set; }
+            [Display(Name = "Username")]
+            public string? UserName { get; set; }
 
             [Required]
             [DataType(DataType.Password)]
@@ -67,19 +67,19 @@ namespace ticketSystem.Areas.Identity.Pages.Account
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
-            if (!ModelState.IsValid || Input == null || string.IsNullOrEmpty(Input.Email))
+            if (!ModelState.IsValid || Input == null || string.IsNullOrEmpty(Input.UserName))
             {
                 ModelState.AddModelError(string.Empty, "Please provide valid credentials.");
                 return Page();
             }
 
-            var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password!, Input.RememberMe, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(Input.UserName, Input.Password!, Input.RememberMe, lockoutOnFailure: false);
 
             if (result.Succeeded)
             {
                 _logger.LogInformation("User logged in.");
 
-                var user = await _userManager.FindByEmailAsync(Input.Email);
+                var user = await _userManager.FindByNameAsync(Input.UserName);
                 if (user != null)
                 {
                     var roles = await _userManager.GetRolesAsync(user);

@@ -1,0 +1,27 @@
+﻿@model List<ticketSystem.Models.ActivityLog>
+@{
+    ViewBag.Title = "Activity Log";
+    var ticketId = ViewBag.TicketId;
+}
+
+<h2>Activity Log for Ticket @ticketId</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Action</th>
+            <th>By</th>
+            <th>At</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var log in Model)
+        {
+            <tr>
+                <td>@log.Action</td>
+                <td>@log.PerformedBy</td>
+                <td>@log.PerformedAt.ToString("g")</td>
+            </tr>
+        }
+    </tbody>
+</table>

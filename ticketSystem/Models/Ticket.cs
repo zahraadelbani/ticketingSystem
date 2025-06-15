@@ -1,11 +1,15 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ticketSystem.Models
 {
     public class Ticket
     {
         public int Id { get; set; }
+
+        // simple assigned-to string
+        public string? AssignedTo { get; set; }
 
         [Required(ErrorMessage = "Title is required")]
         public string Title { get; set; } = string.Empty;
@@ -18,10 +22,20 @@ namespace ticketSystem.Models
 
         public string? CreatedBy { get; set; }
 
-        // 🔗 Foreign Key to Project
         [Required(ErrorMessage = "Please select a project")]
         public int ProjectId { get; set; }
 
-        public virtual Project Project { get; set; } = null!;
+        [ForeignKey("ProjectId")]
+        public virtual Project? Project { get; set; }
+
+        // Category relationship
+        public int? CategoryId { get; set; }
+        [ForeignKey("CategoryId")]
+        public virtual Category? Category { get; set; }
+
+        // Priority relationship
+        public int? PriorityId { get; set; }
+        [ForeignKey("PriorityId")]
+        public virtual Priority? Priority { get; set; }
     }
 }

@@ -1,5 +1,15 @@
 ﻿@model ticketSystem.Models.Ticket
 
+@if (ViewBag.DebugErrors != null)
+{
+    <ul class="text-danger">
+        @foreach (var error in ViewBag.DebugErrors)
+        {
+            <li>@error</li>
+        }
+    </ul>
+}
+
 @{
     ViewData["Title"] = "Create";
 }
@@ -12,39 +22,57 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
+                <select asp-for="Status" class="form-control" asp-items="ViewBag.StatusList"></select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="CreatedAt" class="control-label"></label>
                 <input asp-for="CreatedAt" class="form-control" />
                 <span asp-validation-for="CreatedAt" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="CreatedBy" class="control-label"></label>
-                <input asp-for="CreatedBy" class="form-control" />
-                <span asp-validation-for="CreatedBy" class="text-danger"></span>
-            </div>
+
             <div class="form-group">
                 <label asp-for="ProjectId" class="control-label"></label>
-                <select asp-for="ProjectId" class="form-control" asp-items="ViewBag.ProjectId"></select>
+                <select asp-for="ProjectId" class="form-control" asp-items="ViewBag.ProjectId">
+                    <option value="">-- choose project --</option>
+                </select>
                 <span asp-validation-for="ProjectId" class="text-danger"></span>
-           
-
-                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
+
+            <div class="form-group">
+                <label asp-for="CategoryId" class="control-label"></label>
+                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryList">
+                    <option value="">-- choose category --</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="PriorityId" class="control-label"></label>
+                <select asp-for="PriorityId" class="form-control" asp-items="ViewBag.PriorityList">
+                    <option value="">-- choose priority --</option>
+                </select>
+                <span asp-validation-for="PriorityId" class="text-danger"></span>
+            </div>
+
+
+            <input type="submit" value="Create" class="btn btn-primary" />
         </form>
     </div>
 </div>
@@ -54,5 +82,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
