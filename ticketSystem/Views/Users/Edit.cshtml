@@ -4,21 +4,84 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Edit User</h2>
-
-<form asp-action="Edit" method="post">
-    <input type="hidden" name="id" value="@Model.Id" />
-
-    <div class="mb-3">
-        <label>Email</label>
-        <input name="email" class="form-control" value="@Model.Email" required />
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="bi bi-pencil me-2"></i>Edit User
+        </h1>
+        <a class="btn btn-outline-secondary" href="@Url.Action("Index", "Users")">
+            <i class="bi bi-arrow-left me-2"></i>Back to List
+        </a>
     </div>
 
-    <div class="mb-3">
-        <label>Role (optional)</label>
-        <input name="role" class="form-control" />
-    </div>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-action="Edit" method="post" class="needs-validation" novalidate>
+                <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
 
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a class="btn btn-secondary" href="@Url.Action("Index", "Users")">Cancel</a>
-</form>
+                <input type="hidden" name="id" value="@Model.Id" />
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        <input name="email" class="form-control" value="@Model.Email" required readonly />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="role" class="form-label">Role (optional)</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person-check"></i></span>
+                        <input name="role" class="form-control" placeholder="Enter new role (e.g., Admin, Manager, User)" />
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-2"></i>Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-label {
+        font-weight: 500;
+        color: #2d3436;
+    }
+
+    .input-group-text {
+        background-color: #f8f9fa;
+        border-right: none;
+    }
+
+    .form-control, .form-select {
+        border-left: none;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #ced4da;
+        box-shadow: none;
+    }
+
+    .input-group:focus-within {
+        box-shadow: 0 0 0 0.2rem rgba(108, 92, 231, 0.25);
+    }
+
+    .btn-primary {
+        padding: 0.5rem 1.5rem;
+    }
+
+    .alert {
+        border: none;
+        border-radius: 10px;
+    }
+
+    .card {
+        border: none;
+        border-radius: 15px;
+    }
+</style>

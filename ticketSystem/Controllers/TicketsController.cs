@@ -24,7 +24,10 @@ namespace ticketSystem.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var tickets = _context.Tickets.Include(t => t.Project);
+            var tickets = _context.Tickets
+                .Include(t => t.Project)
+                .Include(t => t.Category)
+                .Include(t => t.Priority);
             return View(await tickets.ToListAsync());
         }
 
@@ -34,6 +37,8 @@ namespace ticketSystem.Controllers
 
             var ticket = await _context.Tickets
                 .Include(t => t.Project)
+                .Include(t => t.Category)
+                .Include(t => t.Priority)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (ticket == null) return NotFound();
@@ -63,7 +68,7 @@ namespace ticketSystem.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "User,Admin,Manager")]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,Status,ProjectId")] Ticket ticket)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,Status,ProjectId,CategoryId,PriorityId")] Ticket ticket)
         {
             ticket.CreatedAt = System.DateTime.Now;
             var user = await _userManager.GetUserAsync(User);
@@ -87,7 +92,11 @@ namespace ticketSystem.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
-            var ticket = await _context.Tickets.Include(t => t.Project).FirstOrDefaultAsync(t => t.Id == id);
+            var ticket = await _context.Tickets
+                .Include(t => t.Project)
+                .Include(t => t.Category)
+                .Include(t => t.Priority)
+                .FirstOrDefaultAsync(t => t.Id == id);
             if (ticket == null) return NotFound();
             ViewBag.ProjectId = new SelectList(_context.Projects, "Id", "Name", ticket.ProjectId);
             ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", ticket.CategoryId);  // ← ADD
@@ -99,7 +108,7 @@ namespace ticketSystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Status,CreatedAt,CreatedBy,ProjectId,CategoryId,PriorityId,AssignedTo")] Ticket ticket)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Status,CreatedAt,CreatedBy,ProjectId,CategoryId,PriorityId")] Ticket ticket)
         {
             if (id != ticket.Id) return NotFound();
 
@@ -145,17 +154,6 @@ namespace ticketSystem.Controllers
                         {
                             TicketId = ticket.Id,
                             Action = $"Status changed from \"{originalTicket.Status}\" to \"{ticket.Status}\"",
-                            PerformedBy = username,
-                            PerformedAt = now
-                        });
-                    }
-
-                    if (ticket.AssignedTo != originalTicket.AssignedTo)
-                    {
-                        logs.Add(new ActivityLog
-                        {
-                            TicketId = ticket.Id,
-                            Action = $"Assignment changed from \"{originalTicket.AssignedTo}\" to \"{ticket.AssignedTo}\"",
                             PerformedBy = username,
                             PerformedAt = now
                         });

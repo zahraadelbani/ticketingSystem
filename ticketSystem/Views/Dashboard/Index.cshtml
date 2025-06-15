@@ -14,138 +14,291 @@
     var tickets = Model.FilteredTickets ?? Enumerable.Empty<DashboardTicketDto>();
 }
 
-<h2>Dashboard</h2>
+<div class="container-fluid px-4">
+    <h1 class="h3 mb-4 text-gray-800"><i class="bi bi-speedometer2 me-2"></i>Dashboard</h1>
 
-<p>Total tickets: @Model.TotalTickets</p>
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col me-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Tickets
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalTickets</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-ticket-detailed fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-@if (Model.TicketsByStatus?.Any() == true)
-{
-    <ul>
-        @foreach (var kv in Model.TicketsByStatus)
+        @if (Model.TicketsByStatus?.Any() == true)
         {
-            <li>@kv.Key: @kv.Value</li>
+            @foreach (var kv in Model.TicketsByStatus)
+            {
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-secondary shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col me-2">
+                                    <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
+                                        @kv.Key Tickets
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">@kv.Value</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="bi bi-info-circle fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
         }
-    </ul>
-}
-
-<form method="get" class="row g-2 mb-4">
-    <!-- Projects -->
-    <div class="col">
-        <select name="projectId" class="form-select">
-            <option value="">All projects</option>
-            @foreach (var p in projects)
-            {
-                if (Model.SelectedProjectId == p.Id)
-                {
-                    <option value="@p.Id" selected>@p.Name</option>
-                }
-                else
-                {
-                    <option value="@p.Id">@p.Name</option>
-                }
-            }
-        </select>
     </div>
 
-    <!-- Categories -->
-    <div class="col">
-        <select name="categoryId" class="form-select">
-            <option value="">All categories</option>
-            @foreach (var c in categories)
-            {
-                if (Model.SelectedCategoryId == c.Id)
-                {
-                    <option value="@c.Id" selected>@c.Name</option>
-                }
-                else
-                {
-                    <option value="@c.Id">@c.Name</option>
-                }
-            }
-        </select>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Ticket Filters</h6>
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-md-auto">
+                    <label for="projectId" class="form-label">Project</label>
+                    <select name="projectId" id="projectId" class="form-select form-select-sm">
+                        <option value="">All projects</option>
+                        @foreach (var p in projects)
+                        {
+                            if (Model.SelectedProjectId == p.Id)
+                            {
+                                <option value="@p.Id" selected>@p.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@p.Id">@p.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-auto">
+                    <label for="categoryId" class="form-label">Category</label>
+                    <select name="categoryId" id="categoryId" class="form-select form-select-sm">
+                        <option value="">All categories</option>
+                        @foreach (var c in categories)
+                        {
+                            if (Model.SelectedCategoryId == c.Id)
+                            {
+                                <option value="@c.Id" selected>@c.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@c.Id">@c.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-auto">
+                    <label for="priorityId" class="form-label">Priority</label>
+                    <select name="priorityId" id="priorityId" class="form-select form-select-sm">
+                        <option value="">All priorities</option>
+                        @foreach (var pr in priorities)
+                        {
+                            if (Model.SelectedPriorityId == pr.Id)
+                            {
+                                <option value="@pr.Id" selected>@pr.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@pr.Id">@pr.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-auto">
+                    <label for="status" class="form-label">Status</label>
+                    <select name="status" id="status" class="form-select form-select-sm">
+                        <option value="">All statuses</option>
+                        @foreach (var s in statuses)
+                        {
+                            if (Model.SelectedStatus == s)
+                            {
+                                <option value="@s" selected>@s</option>
+                            }
+                            else
+                            {
+                                <option value="@s">@s</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-auto">
+                    <label for="userId" class="form-label">User</label>
+                    <select name="userId" id="userId" class="form-select form-select-sm">
+                        <option value="">All users</option>
+                        @foreach (var u in users)
+                        {
+                            if (Model.SelectedUserId == u.Id)
+                            {
+                                <option value="@u.Id" selected>@u.UserName</option>
+                            }
+                            else
+                            {
+                                <option value="@u.Id">@u.UserName</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-auto">
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="bi bi-funnel me-1"></i>Filter
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <!-- Priorities -->
-    <div class="col">
-        <select name="priorityId" class="form-select">
-            <option value="">All priorities</option>
-            @foreach (var pr in priorities)
-            {
-                if (Model.SelectedPriorityId == pr.Id)
-                {
-                    <option value="@pr.Id" selected>@pr.Name</option>
-                }
-                else
-                {
-                    <option value="@pr.Id">@pr.Name</option>
-                }
-            }
-        </select>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Filtered Tickets</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Status</th>
+                            <th>Category</th>
+                            <th>Priority</th>
+                            <th>Assigned To</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (tickets.Any())
+                        {
+                            @foreach (var t in tickets)
+                            {
+                                <tr>
+                                    <td>@t.Id</td>
+                                    <td>@t.Title</td>
+                                    <td>
+                                        <span class="badge rounded-pill @(t.Status switch {
+                                            "Open" => "bg-success",
+                                            "In Progress" => "bg-warning",
+                                            "Closed" => "bg-secondary",
+                                            _ => "bg-primary"
+                                        })">
+                                            @t.Status
+                                        </span>
+                                    </td>
+                                    <td><span class="badge bg-primary">@t.CategoryName</span></td>
+                                    <td>
+                                        <span class="badge rounded-pill @(t.PriorityName switch {
+                                            "High" => "bg-danger",
+                                            "Medium" => "bg-warning",
+                                            "Low" => "bg-success",
+                                            _ => "bg-secondary"
+                                        })">
+                                            @t.PriorityName
+                                        </span>
+                                    </td>
+                                    <td>@t.AssignedTo</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a asp-controller="Tickets" asp-action="Details" asp-route-id="@t.Id" class="btn btn-info"><i class="bi bi-eye"></i></a>
+                                            <a asp-controller="Tickets" asp-action="Edit" asp-route-id="@t.Id" class="btn btn-warning"><i class="bi bi-pencil"></i></a>
+                                            <a asp-controller="Tickets" asp-action="Delete" asp-route-id="@t.Id" class="btn btn-danger"><i class="bi bi-trash"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center py-4">
+                                    <i class="bi bi-exclamation-circle me-2"></i>No tickets found matching your criteria.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+</div>
 
-    <!-- Statuses -->
-    <div class="col">
-        <select name="status" class="form-select">
-            <option value="">All statuses</option>
-            @foreach (var s in statuses)
-            {
-                if (Model.SelectedStatus == s)
-                {
-                    <option value="@s" selected>@s</option>
-                }
-                else
-                {
-                    <option value="@s">@s</option>
-                }
-            }
-        </select>
-    </div>
+<style>
+    .card-body .text-xs {
+        font-size: 0.7rem;
+    }
 
-    <!-- Users -->
-    <div class="col">
-        <select name="userId" class="form-select">
-            <option value="">All users</option>
-            @foreach (var u in users)
-            {
-                if (Model.SelectedUserId == u.Id)
-                {
-                    <option value="@u.Id" selected>@u.UserName</option>
-                }
-                else
-                {
-                    <option value="@u.Id">@u.UserName</option>
-                }
-            }
-        </select>
-    </div>
+    .card-body .h5 {
+        font-size: 1.25rem;
+    }
 
-    <div class="col-auto">
-        <button type="submit" class="btn btn-primary">Filter</button>
-    </div>
-</form>
+    .text-gray-300 {
+        color: #dee2e6 !important;
+    }
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Status</th>
-            <th>Category</th>
-            <th>Priority</th>
-            <th>Assigned To</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var t in tickets)
-        {
-            <tr>
-                <td>@t.Id</td>
-                <td>@t.Title</td>
-                <td>@t.Status</td>
-                <td>@t.CategoryName</td>
-                <td>@t.PriorityName</td>
-                <td>@t.AssignedTo</td>
-            </tr>
-        }
-    </tbody>
-</table>
+    .fa-2x {
+        font-size: 2em;
+    }
+
+    .card-header {
+        background-color: #f8f9fc;
+        border-bottom: 1px solid #e3e6f0;
+        color: var(--primary-color);
+    }
+
+    .card-header .text-primary {
+        color: var(--primary-color) !important;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #2d3436;
+    }
+
+    .form-select-sm {
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+        font-size: 0.875rem;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.75rem;
+    }
+
+    .table thead th {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        color: #5a5c69;
+    }
+
+    .table tbody td {
+        font-size: 0.9rem;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(108, 92, 231, 0.05);
+    }
+
+    .badge {
+        font-weight: 500;
+        padding: 0.5em 0.8em;
+    }
+</style>

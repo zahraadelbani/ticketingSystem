@@ -8,9 +8,6 @@ namespace ticketSystem.Models
     {
         public int Id { get; set; }
 
-        // simple assigned-to string
-        public string? AssignedTo { get; set; }
-
         [Required(ErrorMessage = "Title is required")]
         public string Title { get; set; } = string.Empty;
 

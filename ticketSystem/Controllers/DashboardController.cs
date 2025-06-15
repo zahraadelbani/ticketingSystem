@@ -12,7 +12,7 @@ public class DashboardController : Controller
 
     public async Task<IActionResult> Index(
         int? projectId, int? categoryId, int? priorityId,
-        string? status, string? assignedTo)    // renamed userId → assignedTo
+        string? status)    // renamed userId → assignedTo
     {
         var q = _ctx.Tickets
             .Include(t => t.Project)
@@ -24,7 +24,6 @@ public class DashboardController : Controller
         if (categoryId.HasValue) q = q.Where(t => t.CategoryId == categoryId);
         if (priorityId.HasValue) q = q.Where(t => t.PriorityId == priorityId);
         if (!string.IsNullOrEmpty(status)) q = q.Where(t => t.Status == status);
-        if (!string.IsNullOrEmpty(assignedTo)) q = q.Where(t => t.AssignedTo == assignedTo);
 
         var tickets = await q
           .Select(t => new DashboardTicketDto
@@ -33,8 +32,7 @@ public class DashboardController : Controller
               Title = t.Title,
               Status = t.Status!,
               CategoryName = t.Category!.Name,
-              PriorityName = t.Priority!.Name,
-              AssignedTo = t.AssignedTo    // simple string
+              PriorityName = t.Priority!.Name
           })
           .ToListAsync();
 
@@ -48,14 +46,14 @@ public class DashboardController : Controller
 
         var vm = new DashboardViewModel
         {
-            TotalTickets = tickets.Count,
+            TotalTickets = tickets.Count(),
             TicketsByStatus = byStatus,
             FilteredTickets = tickets,
             SelectedProjectId = projectId,
             SelectedCategoryId = categoryId,
             SelectedPriorityId = priorityId,
             SelectedStatus = status,
-            SelectedUserId = assignedTo  // repurpose for your string filter
+            SelectedUserId = null  // repurpose for your string filter
         };
 
         return View(vm);

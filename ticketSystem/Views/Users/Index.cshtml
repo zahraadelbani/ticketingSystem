@@ -4,29 +4,95 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>All Users</h2>
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="bi bi-people me-2"></i>All Users
+        </h1>
+        <a class="btn btn-primary" href="@Url.Action("Create", "Users")">
+            <i class="bi bi-person-plus me-2"></i>Create New User
+        </a>
+    </div>
 
-<a class="btn btn-primary mb-3" href="@Url.Action("Create", "Users")">Create New User</a>
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Email</th>
+                            <th>Roles</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>@user.Email</td>
+                                <td>
+                                    @if (ViewBag.UserRoles != null && ViewBag.UserRoles[user.Id] != null)
+                                    {
+                                        <span class="badge bg-secondary">@ViewBag.UserRoles[user.Id]</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a class="btn btn-warning" href="@Url.Action("Edit", "Users", new { id = user.Id })">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a class="btn btn-danger" href="@Url.Action("Delete", "Users", new { id = user.Id })">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
-<table class="table table-bordered table-striped">
-    <thead class="table-dark">
-        <tr>
-            <th>Email</th>
-            <th>Roles</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model)
-        {
-            <tr>
-                <td>@user.Email</td>
-                <td>@ViewBag.UserRoles[user.Id]</td>
-                <td>
-                    <a class="btn btn-sm btn-info" href="@Url.Action("Edit", "Users", new { id = user.Id })">Edit</a>
-                    <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", "Users", new { id = user.Id })">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<style>
+    .table thead th {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        color: #5a5c69;
+    }
+
+    .table tbody td {
+        font-size: 0.9rem;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(108, 92, 231, 0.05);
+    }
+
+    .btn-group .btn {
+        padding: 0.25rem 0.5rem;
+    }
+
+    .btn-group .btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .card-header {
+        background-color: #f8f9fc;
+        border-bottom: 1px solid #e3e6f0;
+        color: var(--primary-color);
+    }
+
+    .card {
+        border: none;
+        border-radius: 15px;
+    }
+
+    .badge {
+        font-weight: 500;
+        padding: 0.5em 0.8em;
+    }
+</style>
