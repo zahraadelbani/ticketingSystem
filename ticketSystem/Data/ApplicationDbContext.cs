@@ -13,7 +13,8 @@ namespace ticketSystem.Data
         }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<ActivityLog> ActivityLogs { get; set; }
-
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Priority> Priorities { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Project> Projects { get; set; }
 

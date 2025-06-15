@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ticketSystem.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class TicketsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -54,10 +54,9 @@ namespace ticketSystem.Controllers
         public IActionResult Create()
         {
             ViewBag.ProjectId = new SelectList(_context.Projects, "Id", "Name");
-            ViewBag.StatusList = new SelectList(new[]
-            {
-                "Open", "In Progress", "Resolved", "Closed"
-            });
+            ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name");    // ← ADD THIS
+            ViewBag.PriorityList = new SelectList(_context.Priorities, "Id", "Name");    // ← AND THIS
+            ViewBag.StatusList = new SelectList(new[] { "Open", "In Progress", "Resolved", "Closed" });
             return View();
         }
 
@@ -72,10 +71,12 @@ namespace ticketSystem.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewBag.DebugErrors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
                 ViewBag.ProjectId = new SelectList(_context.Projects, "Id", "Name", ticket.ProjectId);
-                ViewBag.StatusList = new SelectList(new[] { "Open", "In Progress", "Resolved", "Closed" });
+                ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", ticket.CategoryId);  // ← ADD
+                ViewBag.PriorityList = new SelectList(_context.Priorities, "Id", "Name", ticket.PriorityId);  // ← ADD
+                ViewBag.StatusList = new SelectList(new[] { "Open", "In Progress", "Resolved", "Closed" }, ticket.Status);
                 return View(ticket);
+
             }
 
             _context.Add(ticket);
@@ -89,13 +90,16 @@ namespace ticketSystem.Controllers
             var ticket = await _context.Tickets.Include(t => t.Project).FirstOrDefaultAsync(t => t.Id == id);
             if (ticket == null) return NotFound();
             ViewBag.ProjectId = new SelectList(_context.Projects, "Id", "Name", ticket.ProjectId);
-            ViewBag.StatusList = new SelectList(new[] { "Open", "In Progress", "Resolved", "Closed" });
+            ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", ticket.CategoryId);  // ← ADD
+            ViewBag.PriorityList = new SelectList(_context.Priorities, "Id", "Name", ticket.PriorityId);  // ← ADD
+            ViewBag.StatusList = new SelectList(new[] { "Open", "In Progress", "Resolved", "Closed" }, ticket.Status);
             return View(ticket);
+
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Status,CreatedAt,CreatedBy,ProjectId,AssignedTo")] Ticket ticket)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Status,CreatedAt,CreatedBy,ProjectId,CategoryId,PriorityId,AssignedTo")] Ticket ticket)
         {
             if (id != ticket.Id) return NotFound();
 
@@ -184,10 +188,14 @@ namespace ticketSystem.Controllers
             }
 
             ViewBag.ProjectId = new SelectList(_context.Projects, "Id", "Name", ticket.ProjectId);
+            ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", ticket.CategoryId);
+            ViewBag.PriorityList = new SelectList(_context.Priorities, "Id", "Name", ticket.PriorityId);
+            ViewBag.StatusList = new SelectList(new[] { "Open", "In Progress", "Resolved", "Closed" }, ticket.Status);
+
             return View(ticket);
         }
 
-        [Authorize(Roles = "Admin,Manager")]
+        //[Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -197,7 +205,7 @@ namespace ticketSystem.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Manager")]
+        //[Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var ticket = await _context.Tickets.FindAsync(id);

@@ -1,0 +1,151 @@
+﻿@using ticketSystem.Models
+@using System.Linq
+@model DashboardViewModel
+
+@{
+    // pull your dropdown lists out of the ViewBag safely
+    var projects = ViewBag.Projects as IEnumerable<Project> ?? Enumerable.Empty<Project>();
+    var categories = ViewBag.Categories as IEnumerable<Category> ?? Enumerable.Empty<Category>();
+    var priorities = ViewBag.Priorities as IEnumerable<Priority> ?? Enumerable.Empty<Priority>();
+    var users = ViewBag.Users as IEnumerable<ApplicationUser> ?? Enumerable.Empty<ApplicationUser>();
+
+    // your statuses and tickets
+    var statuses = Model.TicketsByStatus?.Keys ?? Enumerable.Empty<string>();
+    var tickets = Model.FilteredTickets ?? Enumerable.Empty<DashboardTicketDto>();
+}
+
+<h2>Dashboard</h2>
+
+<p>Total tickets: @Model.TotalTickets</p>
+
+@if (Model.TicketsByStatus?.Any() == true)
+{
+    <ul>
+        @foreach (var kv in Model.TicketsByStatus)
+        {
+            <li>@kv.Key: @kv.Value</li>
+        }
+    </ul>
+}
+
+<form method="get" class="row g-2 mb-4">
+    <!-- Projects -->
+    <div class="col">
+        <select name="projectId" class="form-select">
+            <option value="">All projects</option>
+            @foreach (var p in projects)
+            {
+                if (Model.SelectedProjectId == p.Id)
+                {
+                    <option value="@p.Id" selected>@p.Name</option>
+                }
+                else
+                {
+                    <option value="@p.Id">@p.Name</option>
+                }
+            }
+        </select>
+    </div>
+
+    <!-- Categories -->
+    <div class="col">
+        <select name="categoryId" class="form-select">
+            <option value="">All categories</option>
+            @foreach (var c in categories)
+            {
+                if (Model.SelectedCategoryId == c.Id)
+                {
+                    <option value="@c.Id" selected>@c.Name</option>
+                }
+                else
+                {
+                    <option value="@c.Id">@c.Name</option>
+                }
+            }
+        </select>
+    </div>
+
+    <!-- Priorities -->
+    <div class="col">
+        <select name="priorityId" class="form-select">
+            <option value="">All priorities</option>
+            @foreach (var pr in priorities)
+            {
+                if (Model.SelectedPriorityId == pr.Id)
+                {
+                    <option value="@pr.Id" selected>@pr.Name</option>
+                }
+                else
+                {
+                    <option value="@pr.Id">@pr.Name</option>
+                }
+            }
+        </select>
+    </div>
+
+    <!-- Statuses -->
+    <div class="col">
+        <select name="status" class="form-select">
+            <option value="">All statuses</option>
+            @foreach (var s in statuses)
+            {
+                if (Model.SelectedStatus == s)
+                {
+                    <option value="@s" selected>@s</option>
+                }
+                else
+                {
+                    <option value="@s">@s</option>
+                }
+            }
+        </select>
+    </div>
+
+    <!-- Users -->
+    <div class="col">
+        <select name="userId" class="form-select">
+            <option value="">All users</option>
+            @foreach (var u in users)
+            {
+                if (Model.SelectedUserId == u.Id)
+                {
+                    <option value="@u.Id" selected>@u.UserName</option>
+                }
+                else
+                {
+                    <option value="@u.Id">@u.UserName</option>
+                }
+            }
+        </select>
+    </div>
+
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Category</th>
+            <th>Priority</th>
+            <th>Assigned To</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var t in tickets)
+        {
+            <tr>
+                <td>@t.Id</td>
+                <td>@t.Title</td>
+                <td>@t.Status</td>
+                <td>@t.CategoryName</td>
+                <td>@t.PriorityName</td>
+                <td>@t.AssignedTo</td>
+            </tr>
+        }
+    </tbody>
+</table>

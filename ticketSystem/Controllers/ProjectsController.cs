@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ticketSystem.Controllers
 {
-    [Authorize(Roles = "Admin,Manager")]
+ //[Authorize(Roles = "Admin,Manager")]
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -7,7 +7,9 @@ namespace ticketSystem.Models
     public class Ticket
     {
         public int Id { get; set; }
-        public string? AssignedTo { get; set; }  // This will store the username or UserId
+
+        // simple assigned-to string
+        public string? AssignedTo { get; set; }
 
         [Required(ErrorMessage = "Title is required")]
         public string Title { get; set; } = string.Empty;
@@ -25,5 +27,15 @@ namespace ticketSystem.Models
 
         [ForeignKey("ProjectId")]
         public virtual Project? Project { get; set; }
+
+        // Category relationship
+        public int? CategoryId { get; set; }
+        [ForeignKey("CategoryId")]
+        public virtual Category? Category { get; set; }
+
+        // Priority relationship
+        public int? PriorityId { get; set; }
+        [ForeignKey("PriorityId")]
+        public virtual Priority? Priority { get; set; }
     }
 }
