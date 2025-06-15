@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ticketSystem.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class TicketsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -32,7 +32,7 @@ namespace ticketSystem.Controllers
             return ticket == null ? NotFound() : View(ticket);
         }
 
-        [Authorize(Roles = "User,Admin,Manager")]
+        //[Authorize(Roles = "User,Admin,Manager")]
         public IActionResult Create()
         {
             ViewBag.ProjectId = new SelectList(_context.Projects, "Id", "Name");
@@ -41,7 +41,7 @@ namespace ticketSystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "User,Admin,Manager")]
+        //[Authorize(Roles = "User,Admin,Manager")]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,Status,ProjectId")] Ticket ticket)
         {
             ticket.CreatedAt = System.DateTime.Now;
@@ -89,7 +89,7 @@ namespace ticketSystem.Controllers
             return View(ticket);
         }
 
-        [Authorize(Roles = "Admin,Manager")]
+        //[Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -99,7 +99,7 @@ namespace ticketSystem.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Manager")]
+        //[Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var ticket = await _context.Tickets.FindAsync(id);
