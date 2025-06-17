@@ -180,7 +180,6 @@
                             <th>Status</th>
                             <th>Category</th>
                             <th>Priority</th>
-                            <th>Assigned To</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -213,7 +212,6 @@
                                             @t.PriorityName
                                         </span>
                                     </td>
-                                    <td>@t.AssignedTo</td>
                                     <td>
                                         <div class="btn-group btn-group-sm" role="group">
                                             <a asp-controller="Tickets" asp-action="Details" asp-route-id="@t.Id" class="btn btn-info"><i class="bi bi-eye"></i></a>
@@ -227,7 +225,7 @@
                         else
                         {
                             <tr>
-                                <td colspan="7" class="text-center py-4">
+                                <td colspan="6" class="text-center py-4">
                                     <i class="bi bi-exclamation-circle me-2"></i>No tickets found matching your criteria.
                                 </td>
                             </tr>

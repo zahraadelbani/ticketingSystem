@@ -4,49 +4,84 @@
     ViewData["Title"] = "Projects";
 }
 
-<h1>Projects</h1>
-
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New Project</a>
-</p>
-@if (!Model.Any())
-{
-    <p>No projects yet. <a href="@Url.Action("Create")">Create one now</a>.</p>
-}
-else
-{
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.FirstOrDefault().Name)</th>
-            <th>@Html.DisplayNameFor(model => model.FirstOrDefault().Description)</th>
-            <th>@Html.DisplayNameFor(model => model.FirstOrDefault().CreatedAt)</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model != null && Model.Any())
-        {
-            foreach (var item in Model)
+<div class="container mt-4">
+    <div class="card shadow-sm mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2 class="card-title mb-0"><i class="bi bi-folder me-2"></i>@ViewData["Title"]</h2>
+            <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle me-2"></i>Create New Project</a>
+        </div>
+        <div class="card-body">
+            @if (!Model.Any())
             {
-                <tr>
-                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
-                    <td>@Html.DisplayFor(modelItem => item.CreatedAt)</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </td>
-                </tr>
+                <div class="alert alert-info text-center" role="alert">
+                    <i class="bi bi-info-circle me-2"></i>No projects yet. <a asp-action="Create" class="alert-link">Create one now</a>.
+                </div>
             }
-        }
-        else
-        {
-            <tr>
-                <td colspan="4">No projects found.</td>
-            </tr>
-        }
-    </tbody>
-</table>
-}
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col">@Html.DisplayNameFor(model => model.FirstOrDefault().Name)</th>
+                                <th scope="col">@Html.DisplayNameFor(model => model.FirstOrDefault().Description)</th>
+                                <th scope="col">@Html.DisplayNameFor(model => model.FirstOrDefault().CreatedAt)</th>
+                                <th scope="col" class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.CreatedAt)</td>
+                                    <td class="text-end">
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil-square"></i></a>
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info" title="Details"><i class="bi bi-info-circle"></i></a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .card-header {
+        background-color: #f8f9fc; /* Light background for the header */
+        border-bottom: 1px solid #e3e6f0;
+        color: var(--primary-color); /* Use the primary color for the text */
+        font-weight: 600;
+    }
+
+    .table thead th {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        color: #5a5c69;
+    }
+
+    .table tbody td {
+        font-size: 0.9rem;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(108, 92, 231, 0.05);
+    }
+
+    .btn-group .btn {
+        padding: 0.25rem 0.5rem;
+    }
+
+    .btn-group .btn:hover {
+        transform: translateY(-1px);
+    }
+</style>

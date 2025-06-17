@@ -32,7 +32,8 @@ public class DashboardController : Controller
               Title = t.Title,
               Status = t.Status!,
               CategoryName = t.Category!.Name,
-              PriorityName = t.Priority!.Name
+              PriorityName = t.Priority!.Name,
+              AssignedTo = t.CreatedBy
           })
           .ToListAsync();
 
@@ -43,6 +44,7 @@ public class DashboardController : Controller
         ViewBag.Projects = await _ctx.Projects.ToListAsync();
         ViewBag.Categories = await _ctx.Categories.ToListAsync();
         ViewBag.Priorities = await _ctx.Priorities.ToListAsync();
+        ViewBag.Users = await _ctx.Users.ToListAsync();
 
         var vm = new DashboardViewModel
         {
